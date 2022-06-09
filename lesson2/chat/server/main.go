@@ -48,21 +48,17 @@ func game() {
 			if operand2 == 0 && operator == "/" {
 				operand2 = 1
 			}
-
-			question += fmt.Sprintf("%d %s %d = ? ", operand1, operator, operand2)
-			switch operator {
-			case "+":
-				answer = fmt.Sprint(operand1 + operand2)
-			case "-":
-				answer = fmt.Sprint(operand1 - operand2)
-			case "/":
-				answer = fmt.Sprint(operand1 / operand2)
-			case "*":
-				answer = fmt.Sprint(operand1 * operand2)
+			op := map[string]func(int, int) int{
+				"+": func(o1, o2 int) int { return o1 + o2 },
+				"-": func(o1, o2 int) int { return o1 - o2 },
+				"/": func(o1, o2 int) int { return int(o1 / o2) },
+				"*": func(o1, o2 int) int { return o1 * o2 },
 			}
+			question += fmt.Sprintf("%d %s %d = ? ", operand1, operator, operand2)
+			answer = fmt.Sprint(op[operator](operand1, operand2))
 
 		}
-		messages <- "Математика на скорость: " + question + " " + answer
+		messages <- "Математика на скорость: " + question
 		time.Sleep(5 * time.Second)
 	}
 }
